@@ -1,0 +1,781 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #f3f4f6;
+  color: #111827;
+  line-height: 1.6;
+}
+
+#raiz {
+  min-height: 100vh;
+}
+
+.aplicacion {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.encabezado {
+  background-color: #1f2937;
+  color: white;
+  padding: 16px 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.encabezado-contenido {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.encabezado-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+}
+
+.encabezado-navegacion {
+  display: flex;
+  gap: 24px;
+}
+
+.encabezado-navegacion a {
+  color: #d1d5db;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.encabezado-navegacion a:hover {
+  color: white;
+}
+
+.encabezado-acciones {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.contenido-principal {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  min-height: calc(100vh - 180px);
+  width: 100%;
+}
+
+.pie-pagina {
+  background-color: #f9fafb;
+  padding: 16px 24px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.inicio-encabezado {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 32px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border-radius: 12px;
+}
+
+.inicio-encabezado h1 {
+  color: white;
+  margin-bottom: 8px;
+  font-size: 2rem;
+}
+
+.inicio-encabezado p {
+  color: #dbeafe;
+  font-size: 1.125rem;
+}
+
+.lista-subastas h1 {
+  margin-bottom: 24px;
+  color: #111827;
+  font-size: 1.5rem;
+}
+
+.lista-subastas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.tarjeta {
+  background: white;
+  color: #111827;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: box-shadow 0.2s ease;
+}
+
+.tarjeta:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tarjeta-subasta {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: #111827;
+}
+
+.tarjeta-subasta h3 {
+  color: #000;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.tarjeta-subasta p {
+  color: #374151;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+}
+
+.tarjeta-subasta-precios {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 12px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+}
+
+.precio-inicial, .precio-actual {
+  text-align: center;
+}
+
+.precio-inicial span, .precio-actual span {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.precio-inicial strong {
+  font-size: 1.125rem;
+  color: #000;
+  font-weight: 700;
+}
+
+.precio-actual strong {
+  font-size: 1.125rem;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.tarjeta-subasta-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.subasta-estado {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.subasta-estado--activa {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.subasta-estado--finalizada {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.tarjeta-subasta-pujas {
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.tarjeta-subasta-fechas {
+  display: flex;
+  justify-content: space-between;
+  color: #4b5563;
+  font-size: 0.75rem;
+}
+
+.boton {
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+}
+
+.boton:hover:not(.boton--deshabilitado) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.boton--deshabilitado {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.boton--primario {
+  background-color: #2563eb;
+  color: white;
+}
+
+.boton--primario:hover:not(.boton--deshabilitado) {
+  background-color: #1d4ed8;
+}
+
+.boton--secundario {
+  background-color: #6b7280;
+  color: white;
+}
+
+.boton--secundario:hover:not(.boton--deshabilitado) {
+  background-color: #4b5563;
+}
+
+.boton--exito {
+  background-color: #10b981;
+  color: white;
+}
+
+.boton--exito:hover:not(.boton--deshabilitado) {
+  background-color: #059669;
+}
+
+.boton--peligro {
+  background-color: #ef4444;
+  color: white;
+}
+
+.boton--peligro:hover:not(.boton--deshabilitado) {
+  background-color: #dc2626;
+}
+
+.boton--pequeno {
+  padding: 6px 12px;
+  font-size: 0.875rem;
+}
+
+.boton--grande {
+  padding: 14px 28px;
+  font-size: 1.125rem;
+}
+
+.cargador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 16px;
+}
+
+.cargador-animacion {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: rotar 0.8s linear infinite;
+}
+
+@keyframes rotar {
+  to { transform: rotate(360deg); }
+}
+
+.cargador-mensaje {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.mensaje-alerta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.mensaje-alerta-texto {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.mensaje-alerta-cerrar {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0 4px;
+  opacity: 0.7;
+}
+
+.mensaje-alerta-cerrar:hover {
+  opacity: 1;
+}
+
+.mensaje-alerta--exito {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.mensaje-alerta--error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.mensaje-alerta--advertencia {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.mensaje-alerta--info {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.modal-superposicion {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-contenido {
+  background: white;
+  color: #111827;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-titulo {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #111827;
+}
+
+.modal-cerrar {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 4px;
+  line-height: 1;
+}
+
+.modal-cerrar:hover {
+  color: #111827;
+}
+
+.modal-cuerpo {
+  padding: 24px;
+}
+
+.campo-formulario {
+  margin-bottom: 16px;
+}
+
+.campo-etiqueta {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.campo-entrada {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+  color: #111827;
+}
+
+.campo-entrada:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.campo-entrada--error {
+  border-color: #ef4444;
+}
+
+.campo-error {
+  display: block;
+  margin-top: 4px;
+  color: #ef4444;
+  font-size: 0.75rem;
+}
+
+.detalle-subasta {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.detalle-subasta-info h1 {
+  margin-bottom: 12px;
+  color: #000;
+}
+
+.detalle-subasta-info p {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.detalle-subasta-precios {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.detalle-subasta-precios > div {
+  flex: 1;
+  padding: 16px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.detalle-subasta-precios span {
+  display: block;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.detalle-subasta-precios strong {
+  font-size: 1.5rem;
+  color: #000;
+}
+
+.detalle-subasta-precios .precio-actual {
+  color: #2563eb;
+}
+
+.detalle-subasta-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.estado {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.estado--activa {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.estado--finalizada {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.detalle-subasta-fechas p {
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+.formulario-puja {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.historial-pujas {
+  overflow-x: auto;
+}
+
+.tabla-pujas {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-pujas th,
+.tabla-pujas td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+.tabla-pujas th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+}
+
+.monto-puja {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.historial-vacio {
+  text-align: center;
+  color: #6b7280;
+  padding: 24px;
+}
+
+.pagina-pagos h1 {
+  margin-bottom: 24px;
+  color: #000;
+}
+
+.pagos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pago-tarjeta {
+  padding: 16px;
+}
+
+.pago-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.pago-estado {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.pago-estado--aprobado {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.pago-estado--pendiente {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.pago-estado--rechazado {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.pago-monto {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #000;
+}
+
+.pago-info p {
+  margin-bottom: 4px;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.formulario-pago {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pago-resumen {
+  padding: 16px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.pago-resumen p {
+  margin-bottom: 4px;
+  color: #111827;
+}
+
+.pago-botones {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.campana-notificaciones {
+  position: relative;
+  display: inline-block;
+}
+
+.campana-boton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: relative;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.campana-boton:hover {
+  background-color: #374151;
+}
+
+.campana-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.campana-desplegable {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 320px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  z-index: 100;
+  margin-top: 8px;
+}
+
+.lista-notificaciones {
+  padding: 16px;
+  color: #111827;
+}
+
+.lista-notificaciones-vacia {
+  padding: 24px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.lista-notificaciones-titulo {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  color: #111827;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.lista-notificaciones-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notificacion-item {
+  padding: 12px;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  color: #111827;
+}
+
+.notificacion-item:hover {
+  background-color: #f9fafb;
+}
+
+.notificacion-item--no-leida {
+  background-color: #eff6ff;
+}
+
+.notificacion-contenido {
+  flex: 1;
+}
+
+.notificacion-titulo {
+  display: block;
+  font-size: 0.875rem;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.notificacion-mensaje {
+  font-size: 0.75rem;
+  color: #374151;
+  margin: 0 0 4px 0;
+}
+
+.notificacion-fecha {
+  color: #6b7280;
+  font-size: 0.625rem;
+}
+
+.notificacion-indicador {
+  width: 8px;
+  height: 8px;
+  background-color: #2563eb;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
