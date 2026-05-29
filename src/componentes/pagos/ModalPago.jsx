@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { procesarPago } from '../../api/clienteApi';
+import { useUsuario } from '../../contextos/ContextoUsuario';
 import Boton from '../comunes/Boton';
 import CampoFormulario from '../comunes/CampoFormulario';
 import Modal from '../comunes/Modal';
 import MensajeAlerta from '../comunes/MensajeAlerta';
 
 function ModalPago({ abierto, cerrarModal, subastaId, monto, onSuccess }) {
+  const { usuario } = useUsuario();
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState('');
   const [exito, setExito] = useState('');
@@ -14,7 +16,7 @@ function ModalPago({ abierto, cerrarModal, subastaId, monto, onSuccess }) {
     e.preventDefault(); setError(''); setExito('');
     setCargando(true);
     try {
-      const r = await procesarPago({ subastaId, usuarioId: 1, monto });
+      const r = await procesarPago({ subastaId, usuarioId: usuario.id, monto });
       setExito(r.mensaje);
       if (onSuccess) onSuccess(r.datos);
       setTimeout(() => { cerrarModal(); setExito(''); }, 2000);
@@ -31,8 +33,8 @@ function ModalPago({ abierto, cerrarModal, subastaId, monto, onSuccess }) {
           <p><strong>Subasta ID:</strong> {subastaId}</p>
           <p><strong>Monto:</strong> ${monto?.toFixed(2)}</p>
         </div>
-        <CampoFormulario etiqueta="Nombre del titular" valor="Usuario Demo" nombre="titular" onChange={() => {}} requerido />
-        <CampoFormulario etiqueta="Correo" tipo="email" valor="usuario@demo.com" nombre="correo" onChange={() => {}} requerido />
+        <CampoFormulario etiqueta="Nombre del titular" valor={usuario.nombre} nombre="titular" onChange={() => {}} requerido />
+        <CampoFormulario etiqueta="Correo" tipo="email" valor={usuario.correo} nombre="correo" onChange={() => {}} requerido />
         <div className="pago-botones">
           <Boton tipo="secundario" tamano="medio" onClick={cerrarModal}>Cancelar</Boton>
           <Boton tipo="exito" tamano="medio" tipoBoton="submit" deshabilitado={cargando}>{cargando ? 'Procesando...' : 'Confirmar pago'}</Boton>

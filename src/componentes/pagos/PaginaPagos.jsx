@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
 import { obtenerPagosUsuario } from '../../api/clienteApi';
+import { useUsuario } from '../../contextos/ContextoUsuario';
 import Tarjeta from '../comunes/Tarjeta';
 import Cargador from '../comunes/Cargador';
 import MensajeAlerta from '../comunes/MensajeAlerta';
 
 function PaginaPagos() {
+  const { usuario } = useUsuario();
   const [pagos, setPagos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => { cargarPagos(); }, []);
+  useEffect(() => { cargarPagos(); }, [usuario.id]);
 
   const cargarPagos = async () => {
-    try { const r = await obtenerPagosUsuario(1); setPagos(r.datos); }
+    setCargando(true);
+    try { const r = await obtenerPagosUsuario(usuario.id); setPagos(r.datos); }
     catch { setError('Error al cargar pagos'); }
     finally { setCargando(false); }
   };

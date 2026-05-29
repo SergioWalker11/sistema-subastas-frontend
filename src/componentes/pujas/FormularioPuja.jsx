@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { registrarPuja } from '../../api/clienteApi';
+import { useUsuario } from '../../contextos/ContextoUsuario';
 import Boton from '../comunes/Boton';
 import CampoFormulario from '../comunes/CampoFormulario';
 import MensajeAlerta from '../comunes/MensajeAlerta';
 
 function FormularioPuja({ subastaId, precioActual, onSuccess }) {
+  const { usuario } = useUsuario();
   const [monto, setMonto] = useState('');
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState('');
@@ -17,7 +19,7 @@ function FormularioPuja({ subastaId, precioActual, onSuccess }) {
     if (parseFloat(monto) < parseFloat(montoMinimo)) { setError(`Monto minimo $${montoMinimo}`); return; }
     setCargando(true);
     try {
-      await registrarPuja({ subastaId, usuarioId: 1, monto: parseFloat(monto) });
+      await registrarPuja({ subastaId, usuarioId: usuario.id, monto: parseFloat(monto) });
       setExito('Puja registrada exitosamente'); setMonto('');
       if (onSuccess) onSuccess();
     } catch (err) { setError(err.response?.data?.mensaje || 'Error al registrar'); }
