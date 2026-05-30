@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { obtenerSubastasGanadas, procesarPago } from '../api/clienteApi';
 import { useUsuario } from '../contextos/ContextoUsuario';
-import { Card, CardContent, CardHeader, CardTitle } from '../componentes/ui/Card';
+import { Card, CardContent } from '../componentes/ui/Card';
 import { Badge } from '../componentes/ui/Badge';
 import { Button } from '../componentes/ui/Button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../componentes/ui/Dialog';
+import { Clock } from 'lucide-react';
+
+const ESTADO_MAPA = { pendiente_pago: 'Pendiente de pago', vendida: 'Pagada', incumplida: 'Incumplida' };
+const ESTADO_VARIANTE = { pendiente_pago: 'default', vendida: 'secondary', incumplida: 'destructive' };
 
 function PaginaGanadas() {
   const { usuario } = useUsuario();
@@ -50,11 +53,12 @@ function PaginaGanadas() {
                 <p className="font-semibold">{g.nombreProducto}</p>
                 <p className="text-sm text-muted-foreground">Vendedor: {g.nombreVendedor}</p>
                 <p className="text-sm text-muted-foreground">Finalizó: {new Date(g.fechaFin).toLocaleDateString()}</p>
-                <p className="text-lg font-bold text-primary mt-1">Bs {g.montoGanado.toFixed(2)}</p>
+                {g.fechaLimitePago && <p className="text-sm text-muted-foreground"><Clock className="h-3 w-3 inline mr-1" />Límite de pago: {new Date(g.fechaLimitePago).toLocaleString()}</p>}
+                <p className="text-lg font-bold text-primary mt-1">{g.montoGanado.toLocaleString('es-BO', { style: 'currency', currency: 'BOB' })}</p>
               </div>
               <div className="flex flex-col items-end gap-2">
-                <Badge variant={g.pagado ? 'success' : 'secondary'}>{g.pagado ? 'Pagado' : 'Pendiente'}</Badge>
-                {!g.pagado && (
+                <Badge variant={ESTADO_VARIANTE[g.estado] || 'outline'}>{ESTADO_MAPA[g.estado] || g.estado}</Badge>
+                {!g.pagado && g.estado === 'pendiente_pago' && (
                   <Button size="sm" onClick={() => { setSubastaSeleccionada(g); setPagoAbierto(true); }}>Pagar ahora</Button>
                 )}
               </div>
@@ -68,7 +72,7 @@ function PaginaGanadas() {
           <DialogHeader><DialogTitle>Confirmar pago</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">Subasta: {subastaSeleccionada?.nombreProducto}</p>
-            <p className="text-lg font-bold">Monto: Bs {subastaSeleccionada?.montoGanado?.toFixed(2)}</p>
+            <p className="text-lg font-bold">Monto: {subastaSeleccionada?.montoGanado?.toLocaleString('es-BO', { style: 'currency', currency: 'BOB' })}</p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setPagoAbierto(false)}>Cancelar</Button>

@@ -37,6 +37,8 @@ export const obtenerProductos = async () => (await api.get('/productos')).data;
 export const crearProducto = async (d) => (await api.post('/productos', d)).data;
 export const obtenerSubastasVendedor = async (id) => (await api.get(`/subastas/vendedor/${id}`)).data;
 export const obtenerSubastasGanadas = async (id) => (await api.get(`/subastas/ganadas/${id}`)).data;
+export const obtenerPendientesPago = async (id) => (await api.get(`/subastas/pendientes-pago/${id}`)).data;
+export const obtenerVentas = async (id) => (await api.get(`/subastas/ventas/${id}`)).data;
 export const listarUsuarios = async () => (await api.get('/admin/usuarios')).data;
 export const cambiarRolUsuario = async (uid, rid) => (await api.patch(`/admin/usuarios/${uid}/rol`, rid, { headers: { 'Content-Type': 'application/json' } })).data;
 export const cancelarSubasta = async (id) => (await api.patch(`/admin/subastas/${id}/cancelar`, {}));

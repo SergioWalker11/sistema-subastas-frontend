@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-ro
 import { useUsuario } from '../contextos/ContextoUsuario';
 import { Button } from '../componentes/ui/Button';
 import { Badge } from '../componentes/ui/Badge';
-import { Home, DollarSign, Package, Shield, Gavel } from 'lucide-react';
+import { Home, DollarSign, Package, Shield, Gavel, Clock, ShoppingBag } from 'lucide-react';
 import PaginaInicio from '../paginas/PaginaInicio';
 import PaginaDetalleSubasta from '../paginas/PaginaDetalleSubasta';
 import PaginaPagos from '../paginas/PaginaPagos';
@@ -12,6 +12,8 @@ import PaginaMisSubastas from '../paginas/PaginaMisSubastas';
 import PaginaGanadas from '../paginas/PaginaGanadas';
 import PaginaAdmin from '../paginas/PaginaAdmin';
 import PaginaCrearProducto from '../paginas/PaginaCrearProducto';
+import PaginaPendientesPago from '../paginas/PaginaPendientesPago';
+import PaginaVentas from '../paginas/PaginaVentas';
 import CampanaNotificaciones from '../componentes/notificaciones/CampanaNotificaciones';
 
 function RutaProtegida({ children, rol }) {
@@ -31,7 +33,9 @@ function Encabezado() {
           <nav className="hidden md:flex items-center gap-1">
             <Link to="/" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"><Home className="h-4 w-4" />Inicio</Link>
             {usuario && <Link to="/pagos" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"><DollarSign className="h-4 w-4" />Mis Pagos</Link>}
+            {usuario && <Link to="/mis-pagos-pendientes" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"><Clock className="h-4 w-4" />Pendientes</Link>}
             {(usuario?.rol === 'vendedor' || usuario?.rol === 'administrador') && <Link to="/mis-subastas" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"><Package className="h-4 w-4" />Mis Subastas</Link>}
+            {(usuario?.rol === 'vendedor' || usuario?.rol === 'administrador') && <Link to="/mis-ventas" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"><ShoppingBag className="h-4 w-4" />Ventas</Link>}
             {usuario && <Link to="/ganadas" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"><Gavel className="h-4 w-4" />Ganadas</Link>}
             {usuario?.rol === 'administrador' && <Link to="/admin" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"><Shield className="h-4 w-4" />Admin</Link>}
           </nav>
@@ -56,7 +60,9 @@ export default function Rutas() {
             <Route path="/registro" element={<PaginaRegistro />} />
             <Route path="/subasta/:id" element={<PaginaDetalleSubasta />} />
             <Route path="/pagos" element={<RutaProtegida><PaginaPagos /></RutaProtegida>} />
+            <Route path="/mis-pagos-pendientes" element={<RutaProtegida><PaginaPendientesPago /></RutaProtegida>} />
             <Route path="/mis-subastas" element={<RutaProtegida rol="vendedor"><PaginaMisSubastas /></RutaProtegida>} />
+            <Route path="/mis-ventas" element={<RutaProtegida rol="vendedor"><PaginaVentas /></RutaProtegida>} />
             <Route path="/crear-producto" element={<RutaProtegida rol="vendedor"><PaginaCrearProducto /></RutaProtegida>} />
             <Route path="/ganadas" element={<RutaProtegida><PaginaGanadas /></RutaProtegida>} />
             <Route path="/admin" element={<RutaProtegida rol="administrador"><PaginaAdmin /></RutaProtegida>} />
