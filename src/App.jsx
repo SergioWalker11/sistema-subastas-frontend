@@ -1,11 +1,16 @@
+import { ThemeProvider } from 'next-themes';
 import { ProveedorUsuario } from './contextos/ContextoUsuario';
 import Rutas from './rutas/Rutas';
+import { Toaster } from './componentes/ui/NotificacionToast';
 
 function App() {
   return (
-    <ProveedorUsuario>
-      <Rutas />
-    </ProveedorUsuario>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <ProveedorUsuario>
+        <Rutas />
+        <Toaster />
+      </ProveedorUsuario>
+    </ThemeProvider>
   );
 }
 
