@@ -39,15 +39,18 @@ function PaginaPagos() {
           {pagos.map(p => (
             <Card key={p.id}>
               <CardContent className="p-4">
-                <div className="flex justify-between items-center">
-                  <div>
+                <div className="flex justify-between items-start gap-3">
+                  <div className="min-w-0 flex-1">
                     <p className="font-semibold">Subasta #{p.subastaId}</p>
-                    <p className="text-xs text-muted-foreground">Transaccion: {p.codigoTransaccion}</p>
+                    {p.nombreVendedor && <p className="text-xs text-muted-foreground">Vendedor: {p.nombreVendedor}</p>}
+                    {p.correoVendedor && <p className="text-xs text-muted-foreground">{p.correoVendedor}</p>}
+                    <p className="text-xs text-muted-foreground">Transacción: {p.codigoTransaccion}</p>
                     <p className="text-xs text-muted-foreground">{new Date(p.fechaPago).toLocaleString()}</p>
                   </div>
-                  <div className="text-right">
-                    <Badge variant={p.estadoPago === 'aprobado' ? 'success' : 'secondary'}>{p.estadoPago}</Badge>
+                  <div className="text-right shrink-0">
+                    <Badge variant={p.estadoPago === 'aprobado' || p.estadoPago === 'custodia' || p.estadoPago === 'depositado' ? 'success' : 'secondary'}>{p.estadoPago}</Badge>
                     <p className="font-bold text-lg mt-1 text-primary">{formatearMoneda(p.monto)}</p>
+                    {p.franquicia && <p className="text-xs text-muted-foreground mt-0.5">{p.franquicia} ****{p.ultimosDigitos}</p>}
                   </div>
                 </div>
               </CardContent>

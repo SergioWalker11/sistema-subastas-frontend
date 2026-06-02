@@ -4,7 +4,7 @@ import { Button } from '../ui/Boton';
 import { useUsuario } from '../../contextos/ContextoUsuario';
 import { Avatar, AvatarFallback } from '../ui/AvatarUI';
 import { useTheme } from 'next-themes';
-import { Menu, Home, DollarSign, Clock, Package, ShoppingBag, Gavel, Shield, LogOut, Sun, Moon } from 'lucide-react';
+import { Menu, Home, DollarSign, Clock, Package, ShoppingBag, Gavel, Shield, LogOut, Sun, Moon, Users, Tag, AlertTriangle } from 'lucide-react';
 
 export default function NavegacionMovil() {
   const { usuario, cerrarSesion } = useUsuario();
@@ -13,7 +13,7 @@ export default function NavegacionMovil() {
   const rol = usuario?.rol;
 
   const links = [
-    { to: '/', icon: Home, label: 'Inicio' },
+    ...(rol !== 'administrador' ? [{ to: '/', icon: Home, label: 'Inicio' }] : []),
     ...(rol === 'comprador' ? [
       { to: '/pagos', icon: DollarSign, label: 'Mis Pagos' },
       { to: '/mis-pagos-pendientes', icon: Clock, label: 'Pendientes' },
@@ -24,7 +24,10 @@ export default function NavegacionMovil() {
       { to: '/mis-ventas', icon: ShoppingBag, label: 'Ventas' },
     ] : []),
     ...(rol === 'administrador' ? [
-      { to: '/admin', icon: Shield, label: 'Admin' },
+      { to: '/admin#usuarios', icon: Users, label: 'Usuarios' },
+      { to: '/admin#categorias', icon: Tag, label: 'Categorías' },
+      { to: '/admin#subastas', icon: Gavel, label: 'Subastas' },
+      { to: '/admin#denuncias', icon: AlertTriangle, label: 'Denuncias' },
     ] : []),
   ];
 

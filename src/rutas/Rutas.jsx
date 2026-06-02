@@ -20,7 +20,7 @@ import PaginaPerfil from '../paginas/PaginaPerfil';
 import PaginaDenuncias from '../paginas/PaginaDenuncias';
 import PaginaCrearDenuncia from '../paginas/PaginaCrearDenuncia';
 import CampanaNotificaciones from '../componentes/notificaciones/CampanaNotificaciones';
-import { Gavel, Sun, Moon } from 'lucide-react';
+import { Gavel, Sun, Moon, Users, Tag, AlertTriangle } from 'lucide-react';
 
 function RutaProtegida({ children, rol }) {
   const { usuario } = useUsuario();
@@ -45,7 +45,7 @@ function Encabezado() {
             <span className="hidden sm:inline">SubastasOnline</span>
           </Link>
           <nav className="hidden md:flex items-center gap-1">
-            <Link to="/" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">Inicio</Link>
+            {usuario?.rol !== 'administrador' && <Link to="/" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">Inicio</Link>}
             {usuario?.rol === 'comprador' && <>
               <Link to="/pagos" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">Mis Pagos</Link>
               <Link to="/mis-pagos-pendientes" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">Pendientes</Link>
@@ -56,8 +56,10 @@ function Encabezado() {
               <Link to="/mis-ventas" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">Ventas</Link>
             </>}
             {usuario?.rol === 'administrador' && <>
-              <Link to="/admin" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">Admin</Link>
-              <Link to="/denuncias" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">Denuncias</Link>
+              <Link to="/admin#usuarios" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"><Users className="h-4 w-4" />Usuarios</Link>
+              <Link to="/admin#categorias" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"><Tag className="h-4 w-4" />Categorías</Link>
+              <Link to="/admin#subastas" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"><Gavel className="h-4 w-4" />Subastas</Link>
+              <Link to="/admin#denuncias" className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"><AlertTriangle className="h-4 w-4" />Denuncias</Link>
             </>}
           </nav>
         </div>
@@ -72,7 +74,7 @@ function Encabezado() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Link to="/login"><Button variant="ghost" size="sm">Ingresar</Button></Link>
+              <Link to="/login"><Button variant="outline" size="sm">Ingresar</Button></Link>
               <Link to="/registro"><Button size="sm">Registrarse</Button></Link>
             </div>
           )}

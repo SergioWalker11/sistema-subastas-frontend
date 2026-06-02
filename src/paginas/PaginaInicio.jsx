@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import ListaSubastas from '../componentes/listas/ListaSubastas';
 import { Button } from '../componentes/ui/Boton';
+import { useUsuario } from '../contextos/ContextoUsuario';
 import { Gavel, Search } from 'lucide-react';
 
 function PaginaInicio() {
+  const { usuario } = useUsuario();
+
   return (
     <div className="space-y-8 page-enter">
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-700 via-blue-500 to-cyan-400 dark:from-blue-950/60 dark:via-blue-900/40 dark:to-cyan-950/30">
@@ -26,10 +29,12 @@ function PaginaInicio() {
             <p className="text-white/80 text-lg mb-6 max-w-md">
               La plataforma lider de subastas en linea en Bolivia. Descubre productos exclusivos y gana con la mejor oferta.
             </p>
-            <div className="flex gap-3 justify-center md:justify-start">
-              <Link to="/registro"><Button size="lg" variant="secondary" className="shadow-lg">Comenzar ahora</Button></Link>
-              <Link to="/login"><Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10">Iniciar Sesion</Button></Link>
-            </div>
+            {!usuario && (
+              <div className="flex gap-3 justify-center md:justify-start">
+                <Link to="/registro"><Button size="lg" variant="secondary" className="shadow-lg">Comenzar ahora</Button></Link>
+                <Link to="/login"><Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10">Iniciar Sesion</Button></Link>
+              </div>
+            )}
           </div>
           <div className="flex-1 flex justify-center items-center">
             <div className="relative">

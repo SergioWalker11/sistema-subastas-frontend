@@ -1,26 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useUsuario } from '../contextos/ContextoUsuario';
-import { obtenerPendientesPago, procesarPago } from '../api/clienteApi';
+import { obtenerPendientesPago } from '../api/clienteApi';
 import { Card, CardContent, CardHeader, CardTitle } from '../componentes/ui/Tarjeta';
 import { Button } from '../componentes/ui/Boton';
 import { Badge } from '../componentes/ui/Insignia';
 import EstadoVacio from '../componentes/ui/EstadoVacio';
 import Cargador from '../componentes/ui/Cargador';
 import CuentaRegresiva from '../componentes/ui/CuentaRegresiva';
-import Confirmacion from '../componentes/ui/Confirmacion';
-import { toastExito, toastError } from '../componentes/ui/NotificacionToast';
 import { formatearMoneda } from '../utilidades/formatearMoneda';
-import { Clock, DollarSign } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Clock, DollarSign, Mail } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 function PaginaPendientesPago() {
   const { usuario } = useUsuario();
+  const navigate = useNavigate();
   const [pendientes, setPendientes] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
-  const [dialogoAbierto, setDialogoAbierto] = useState(false);
-  const [subastaAPagar, setSubastaAPagar] = useState(null);
-  const [pagandoId, setPagandoId] = useState(null);
 
   const cargar = useCallback(async () => {
     try {
@@ -32,23 +28,6 @@ function PaginaPendientesPago() {
   }, [usuario]);
 
   useEffect(() => { if (usuario) cargar(); }, [usuario, cargar]);
-
-  const confirmarPago = async () => {
-    setDialogoAbierto(false);
-    const subasta = subastaAPagar;
-    if (!subasta) return;
-    try {
-      setPagandoId(subasta.id);
-      await procesarPago({ subastaId: subasta.id, usuarioId: usuario.id, monto: subasta.montoGanado });
-      toastExito('Pago procesado exitosamente');
-      cargar();
-    } catch (e) {
-      toastError(e.response?.data?.mensaje || 'Error al procesar el pago');
-    } finally {
-      setPagandoId(null);
-      setSubastaAPagar(null);
-    }
-  };
 
   if (cargando) return <Cargador />;
   if (error) return <div className="text-destructive p-4">{error}</div>;
@@ -82,16 +61,20 @@ function PaginaPendientesPago() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Vendedor</span>
-                  <span>{p.nombreVendedor}</span>
+                  <span className="text-right">{p.nombreVendedor}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Limite de pago</span>
+                  <span className="text-muted-foreground">Correo vendedor</span>
+                  <span className="text-right text-xs flex items-center gap-1"><Mail className="h-3 w-3" />{p.correoVendedor || 'No disponible'}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Límite de pago</span>
                   <span>{new Date(p.fechaLimitePago).toLocaleString()}</span>
                 </div>
                 <div className="flex gap-2 pt-2">
                   <Link to={`/subasta/${p.id}`} className="flex-1"><Button variant="outline" className="w-full">Ver detalle</Button></Link>
-                  <Button className="flex-1" onClick={() => { setSubastaAPagar(p); setDialogoAbierto(true); }} disabled={pagandoId === p.id}>
-                    {pagandoId === p.id ? 'Procesando...' : <><DollarSign className="h-4 w-4 mr-1" />Pagar ahora</>}
+                  <Button className="flex-1" onClick={() => navigate(`/subasta/${p.id}`)}>
+                    <DollarSign className="h-4 w-4 mr-1" />Pagar ahora
                   </Button>
                 </div>
               </CardContent>
@@ -99,15 +82,6 @@ function PaginaPendientesPago() {
           ))}
         </div>
       )}
-
-      <Confirmacion
-        open={dialogoAbierto}
-        onOpenChange={setDialogoAbierto}
-        title="Confirmar pago"
-        description={subastaAPagar ? `Confirmas el pago de ${formatearMoneda(subastaAPagar.montoGanado)} por "${subastaAPagar.nombreProducto}"?` : ''}
-        confirmText="Pagar"
-        onConfirm={confirmarPago}
-      />
     </div>
   );
 }

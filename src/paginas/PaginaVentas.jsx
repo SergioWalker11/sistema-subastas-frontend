@@ -57,8 +57,14 @@ function PaginaVentas() {
               <CardContent className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Comprador</span>
-                  <span>{v.nombreGanador || 'Sin comprador'}</span>
+                  <span className="text-right">{v.nombreGanador || 'Sin comprador'}</span>
                 </div>
+                {v.correoGanador && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Correo</span>
+                    <span className="text-right text-xs">{v.correoGanador}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Precio final</span>
                   <span className="font-bold text-primary">{formatearMoneda(v.precioFinal)}</span>
@@ -70,7 +76,13 @@ function PaginaVentas() {
                 {v.fechaPago && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Pago recibido</span>
-                    <span className="text-success">{new Date(v.fechaPago).toLocaleDateString()}</span>
+                    <span className="text-success">{new Date(v.fechaPago).toLocaleString()}</span>
+                  </div>
+                )}
+                {v.fechaLimitePago && v.estado === 'pendiente_pago' && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Límite de pago</span>
+                    <span className="text-amber-600">{new Date(v.fechaLimitePago).toLocaleString()}</span>
                   </div>
                 )}
               </CardContent>

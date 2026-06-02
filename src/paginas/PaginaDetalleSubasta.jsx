@@ -173,11 +173,6 @@ function PaginaDetalleSubasta() {
               <AlertTriangle className="h-3 w-3 mr-1" />Denunciar vendedor
             </Button>
           )}
-          {usuario && esPropietario && subasta.ganadorId && (
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-red-600" onClick={() => navigate(`/denunciar?denunciadoId=${subasta.ganadorId}&denunciadoNombre=${encodeURIComponent(subasta.nombreGanador)}`)}>
-              <AlertTriangle className="h-3 w-3 mr-1" />Denunciar comprador
-            </Button>
-          )}
         </CardContent>
       </Card>
 

@@ -3,7 +3,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Avatar, AvatarFallback } from '../ui/AvatarUI';
 import { Badge } from '../ui/Insignia';
 import { useUsuario } from '../../contextos/ContextoUsuario';
-import { Package, ShoppingBag, Gavel, DollarSign, Clock, Shield, LogOut, User, AlertTriangle } from 'lucide-react';
+import { Package, ShoppingBag, Gavel, DollarSign, Clock, LogOut, User, Users, Tag, AlertTriangle } from 'lucide-react';
 
 export default function MenuUsuario() {
   const { usuario, cerrarSesion } = useUsuario();
@@ -45,8 +45,10 @@ export default function MenuUsuario() {
         )}
         {rol === 'administrador' && (
           <>
-            <DropdownMenuItem asChild><Link to="/admin" className="cursor-pointer w-full"><Shield className="h-4 w-4 mr-2" />Admin</Link></DropdownMenuItem>
-            <DropdownMenuItem asChild><Link to="/denuncias" className="cursor-pointer w-full"><AlertTriangle className="h-4 w-4 mr-2" />Denuncias</Link></DropdownMenuItem>
+            <DropdownMenuItem asChild><Link to="/admin#usuarios" className="cursor-pointer w-full"><Users className="h-4 w-4 mr-2" />Usuarios</Link></DropdownMenuItem>
+            <DropdownMenuItem asChild><Link to="/admin#categorias" className="cursor-pointer w-full"><Tag className="h-4 w-4 mr-2" />Categorías</Link></DropdownMenuItem>
+            <DropdownMenuItem asChild><Link to="/admin#subastas" className="cursor-pointer w-full"><Gavel className="h-4 w-4 mr-2" />Subastas</Link></DropdownMenuItem>
+            <DropdownMenuItem asChild><Link to="/admin#denuncias" className="cursor-pointer w-full"><AlertTriangle className="h-4 w-4 mr-2" />Denuncias</Link></DropdownMenuItem>
           </>
         )}
         <DropdownMenuSeparator />

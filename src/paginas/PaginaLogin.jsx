@@ -29,8 +29,8 @@ function PaginaLogin() {
     setError('');
     setCargando(true);
     try {
-      await iniciarSesion(correo, contrasena);
-      navigate('/');
+      const u = await iniciarSesion(correo, contrasena);
+      navigate(u.rol === 'administrador' ? '/admin#usuarios' : '/');
     } catch (err) {
       setError(err.response?.data?.mensaje || 'Error al iniciar sesion');
     } finally {

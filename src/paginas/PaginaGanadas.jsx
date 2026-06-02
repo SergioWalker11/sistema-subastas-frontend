@@ -1,24 +1,21 @@
 import { useState, useEffect } from 'react';
-import { obtenerSubastasGanadas, procesarPago } from '../api/clienteApi';
+import { obtenerSubastasGanadas } from '../api/clienteApi';
 import { useUsuario } from '../contextos/ContextoUsuario';
 import { Card, CardContent } from '../componentes/ui/Tarjeta';
 import { Badge } from '../componentes/ui/Insignia';
 import { Button } from '../componentes/ui/Boton';
-import Confirmacion from '../componentes/ui/Confirmacion';
 import EstadoVacio from '../componentes/ui/EstadoVacio';
 import Cargador from '../componentes/ui/Cargador';
-import { toastExito, toastError } from '../componentes/ui/NotificacionToast';
 import { ESTADO_MAPA, ESTADO_VARIANTE } from '../utilidades/constantes';
 import { formatearMoneda } from '../utilidades/formatearMoneda';
-import { Clock, Trophy } from 'lucide-react';
+import { Clock, Trophy, Mail, DollarSign } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function PaginaGanadas() {
   const { usuario } = useUsuario();
+  const navigate = useNavigate();
   const [ganadas, setGanadas] = useState([]);
   const [cargando, setCargando] = useState(true);
-  const [dialogoAbierto, setDialogoAbierto] = useState(false);
-  const [subastaSeleccionada, setSubastaSeleccionada] = useState(null);
-  const [pagando, setPagando] = useState(false);
 
   const cargar = async () => {
     try {
@@ -29,17 +26,6 @@ function PaginaGanadas() {
   };
 
   useEffect(() => { if (usuario) cargar(); }, [usuario?.id]);
-
-  const confirmarPago = async () => {
-    setDialogoAbierto(false);
-    setPagando(true);
-    try {
-      await procesarPago({ subastaId: subastaSeleccionada.id, usuarioId: usuario.id, monto: subastaSeleccionada.montoGanado });
-      toastExito('Pago procesado exitosamente');
-      cargar();
-    } catch { toastError('Error al procesar el pago'); }
-    finally { setPagando(false); setSubastaSeleccionada(null); }
-  };
 
   if (cargando) return <Cargador />;
 
@@ -60,14 +46,17 @@ function PaginaGanadas() {
                 <div className="min-w-0 flex-1 mr-4">
                   <p className="font-semibold">{g.nombreProducto}</p>
                   <p className="text-sm text-muted-foreground">Vendedor: {g.nombreVendedor}</p>
-                  <p className="text-sm text-muted-foreground">Finalizo: {new Date(g.fechaFin).toLocaleDateString()}</p>
-                  {g.fechaLimitePago && <p className="text-sm text-muted-foreground"><Clock className="h-3 w-3 inline mr-1" />Limite de pago: {new Date(g.fechaLimitePago).toLocaleString()}</p>}
+                  <p className="text-xs text-muted-foreground flex items-center gap-1"><Mail className="h-3 w-3" />{g.correoVendedor || 'No disponible'}</p>
+                  <p className="text-sm text-muted-foreground">Finalizó: {new Date(g.fechaFin).toLocaleDateString()}</p>
+                  {g.fechaLimitePago && <p className="text-sm text-muted-foreground"><Clock className="h-3 w-3 inline mr-1" />Límite de pago: {new Date(g.fechaLimitePago).toLocaleString()}</p>}
                   <p className="text-lg font-bold text-primary mt-1">{formatearMoneda(g.montoGanado)}</p>
                 </div>
                 <div className="flex flex-col items-end gap-2 shrink-0">
                   <Badge variant={ESTADO_VARIANTE[g.estado] || 'outline'}>{ESTADO_MAPA[g.estado] || g.estado}</Badge>
                   {!g.pagado && g.estado === 'pendiente_pago' && (
-                    <Button size="sm" onClick={() => { setSubastaSeleccionada(g); setDialogoAbierto(true); }}>Pagar ahora</Button>
+                    <Button size="sm" onClick={() => navigate(`/subasta/${g.id}`)}>
+                      <DollarSign className="h-4 w-4 mr-1" />Pagar ahora
+                    </Button>
                   )}
                 </div>
               </CardContent>
@@ -75,15 +64,6 @@ function PaginaGanadas() {
           ))}
         </div>
       )}
-
-      <Confirmacion
-        open={dialogoAbierto}
-        onOpenChange={setDialogoAbierto}
-        title="Confirmar pago"
-        description={subastaSeleccionada ? `Confirmas el pago de ${formatearMoneda(subastaSeleccionada.montoGanado)} por "${subastaSeleccionada.nombreProducto}"?` : ''}
-        confirmText="Pagar"
-        onConfirm={confirmarPago}
-      />
     </div>
   );
 }

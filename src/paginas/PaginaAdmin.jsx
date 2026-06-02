@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { listarUsuarios, cambiarRolUsuario, cancelarSubasta, obtenerSubastas, obtenerCategorias, crearCategoria, editarCategoria, suspenderUsuario } from '../api/clienteApi';
+import { useLocation } from 'react-router-dom';
+import { listarUsuarios, cambiarRolUsuario, cancelarSubasta, obtenerSubastas, obtenerCategorias, crearCategoria, editarCategoria, suspenderUsuario, listarDenuncias, resolverDenuncia } from '../api/clienteApi';
 import { Card, CardContent, CardHeader, CardTitle } from '../componentes/ui/Tarjeta';
 import { Badge } from '../componentes/ui/Insignia';
 import { Button } from '../componentes/ui/Boton';
@@ -8,12 +9,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../componentes/ui/Pestanias';
 import Confirmacion from '../componentes/ui/Confirmacion';
 import { toastExito, toastError } from '../componentes/ui/NotificacionToast';
-import { Shield, Users, Gavel, Tag, Plus, Pencil, X, Check, Ban, CircleCheck, AlertTriangle } from 'lucide-react';
+import { Users, Gavel, Tag, Plus, Pencil, X, Check, Ban, CircleCheck, AlertTriangle } from 'lucide-react';
 
 function PaginaAdmin() {
+  const location = useLocation();
+  const hash = location.hash.replace('#', '') || 'usuarios';
   const [usuarios, setUsuarios] = useState([]);
   const [subastas, setSubastas] = useState([]);
   const [categorias, setCategorias] = useState([]);
+  const [denuncias, setDenuncias] = useState([]);
   const [dialogoRol, setDialogoRol] = useState({ abierto: false, usuarioId: null, rolId: null, nombre: '', rolNombre: '' });
   const [dialogoCancelar, setDialogoCancelar] = useState({ abierto: false, subastaId: null, nombre: '' });
   const [dialogoSuspender, setDialogoSuspender] = useState({ abierto: false, usuarioId: null, nombre: '', suspender: true });
@@ -30,6 +34,8 @@ function PaginaAdmin() {
       setSubastas((s.datos || s.data || []).filter(x => x.estado !== 'cancelada'));
       const c = await obtenerCategorias();
       setCategorias(c.datos || []);
+      const d = await listarDenuncias();
+      setDenuncias(d.datos || []);
     } catch { }
   };
 
@@ -90,21 +96,15 @@ function PaginaAdmin() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 page-enter">
-      <h1 className="text-2xl font-bold flex items-center gap-2"><Shield className="h-6 w-6 text-primary" />Panel de Administracion</h1>
 
-      <Tabs defaultValue="usuarios">
-        <TabsList>
-          <TabsTrigger value="usuarios"><Users className="h-4 w-4 mr-1" />Usuarios</TabsTrigger>
-          <TabsTrigger value="categorias"><Tag className="h-4 w-4 mr-1" />Categorías</TabsTrigger>
-          <TabsTrigger value="subastas"><Gavel className="h-4 w-4 mr-1" />Subastas</TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue="usuarios" value={hash}>
 
         <TabsContent value="usuarios">
           <Card>
-            <CardHeader><CardTitle>Gestion de usuarios</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Gestión de usuarios ({usuarios.filter(u => u.rolNombre !== 'administrador').length})</CardTitle></CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {usuarios.map(u => (
+                {usuarios.filter(u => u.rolNombre !== 'administrador').map(u => (
                   <div key={u.id} className={`flex items-center justify-between p-3 rounded-xl flex-wrap gap-2 ${u.estaSuspendido ? 'bg-red-50 dark:bg-red-950/20 border border-red-200' : 'bg-muted/50'}`}>
                     <div>
                       <div className="flex items-center gap-2">
@@ -222,6 +222,45 @@ function PaginaAdmin() {
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="denuncias">
+          <Card>
+            <CardHeader><CardTitle>Denuncias recibidas ({denuncias.length})</CardTitle></CardHeader>
+            <CardContent>
+              {denuncias.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-6">No hay denuncias pendientes.</p>
+              ) : (
+                <div className="space-y-3">
+                  {denuncias.map(d => (
+                    <div key={d.id} className="p-3 bg-muted/50 rounded-xl space-y-2">
+                      <div className="flex items-start justify-between flex-wrap gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm">{d.denunciante} denunció a {d.denunciado}</p>
+                          <p className="text-sm mt-1">{d.motivo}</p>
+                          {d.descripcion && <p className="text-xs text-muted-foreground mt-1">{d.descripcion}</p>}
+                          <p className="text-xs text-muted-foreground mt-1">{new Date(d.fechaCreacion).toLocaleString()}</p>
+                        </div>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <Badge variant={d.estado === 'pendiente' ? 'warning' : d.estado === 'resuelta' ? 'success' : 'outline'}>{d.estado}</Badge>
+                          {d.estado === 'pendiente' && (
+                            <>
+                              <Button variant="destructive" size="sm" onClick={async () => {
+                                try { await resolverDenuncia(d.id, 'suspender'); toastExito('Denuncia resuelta - usuario suspendido'); cargar(); } catch { toastError('Error al resolver'); }
+                              }}>Suspender</Button>
+                              <Button variant="outline" size="sm" onClick={async () => {
+                                try { await resolverDenuncia(d.id, 'rechazar'); toastExito('Denuncia rechazada'); cargar(); } catch { toastError('Error al resolver'); }
+                              }}>Rechazar</Button>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
